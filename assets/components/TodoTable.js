@@ -12,6 +12,7 @@ import AddIcon from '@material-ui/icons/Add';
 import DoneIcon from '@material-ui/icons/Done';
 import CloseIcon from '@material-ui/icons/Close';
 import TextField from "@material-ui/core/TextField";
+import DeleteDialog from "./DeleteDialog";
 
 function TodoTable () {
 
@@ -19,9 +20,14 @@ function TodoTable () {
     const [addTodo, setAddTodo] = useState('');
     const [editIsShown, setEditIsShown] = useState(false);
     const [editTodo, setEditTodo] = useState('');
+    const [deleteConfirmationIsShown, setDeleteConfirmationIsShown] = useState(false);
+    const [todoToBeDeleted, setTodoToBeDeleted] = useState(null);
+
+
 
     return (
-        <form onSubmit={(event)=>context.createTodo(event,{name:addTodo})}>
+        <Fragment>
+            <form onSubmit={(event)=>context.createTodo(event,{name:addTodo})}>
             <Table>
             <TableHead>
                 <TableRow>
@@ -71,15 +77,26 @@ function TodoTable () {
                         </TableCell>
                         <TableCell align={"right"}>
 
-                            <IconButton onClick={()=>{setEditIsShown(todo.id);setEditTodo(todo.name)}}><EditIcon/></IconButton>
+                            <IconButton onClick={()=>{setEditIsShown(todo.id);setEditTodo(todo.name);}}><EditIcon/></IconButton>
 
-                            <IconButton><DeleteIcon/></IconButton>
+                            <IconButton
+                                onClick={()=>{setDeleteConfirmationIsShown(true);setTodoToBeDeleted(todo)}}
+                            ><DeleteIcon/></IconButton>
                         </TableCell>
                     </TableRow>
                 )}
             </TableBody>
         </Table>
         </form>
+
+            {deleteConfirmationIsShown && (
+            <DeleteDialog todo={todoToBeDeleted}
+                          open={deleteConfirmationIsShown}
+                          setDeleteConfirmationIsShown={setDeleteConfirmationIsShown}
+            />
+            )}
+
+        </Fragment>
     );
 
 }
