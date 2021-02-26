@@ -43,26 +43,40 @@ class TodoContextProvider extends Component {
 
     //update
     updateTodo(data) {
-        let todos = [...this.state.todos];
-        let todo=todos.find(todo=>{
-                return todo.id===data.id;
-            }
-        );
-        todo.name=data.name;
-        this.setState({todos:todos},);
+        axios.put('/api/todo/update/'+data.id,data)
+            .then(response => {
+                let todos = [...this.state.todos];
+                let todo = todos.find(todo => {
+                    return todo.id === data.id;
+                })
+
+                todo.name = data.name;
+
+                this.setState({
+                    todos: todos,
+                });
+            }).catch(error=>{
+                console.error(error);
+        })
     }
 
     //delete
     deleteTodo(data) {
-        let todos = [...this.state.todos];
-        let todo=todos.find(todo=>{
-                return todo.id===data.id;
-            }
-        );
-        todos.splice(todos.indexOf(todo),1);
-        this.setState({
-            todos: todos,
-        });
+        axios.delete('/api/todo/delete/'+data.id)
+            .then(response=>{
+                //message
+                let todos = [...this.state.todos];
+                let todo = todos.find(todo => {
+                    return todo.id === data.id;
+                });
+                todos.splice(todos.indexOf(todo),1);
+
+                this.setState({
+                    todos: todos,
+                });
+            }).catch(error=>{
+                console.log(error);
+        })
     }
 
     render() {
